@@ -1,4 +1,23 @@
+
+# Helper function for downloading and unzipping data if it is not present
+prepareData <- function(){
+    if (!file.exists("./data")){
+        dir.create("./data")
+        download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip", 
+                      "./data/household_power_consumption.zip", 
+                      method="curl",
+                      mode = "w")
+        unzip("./data/household_power_consumption.zip", exdir = "./data")
+    }
+}
+
+# Helper function for loading the data in a reasonable format
 loadData <- function(){
+    
+    #Download and unzip data if necessary
+    prepareData()
+    
+    #Extract the data
     inputData <- read.csv2("./data/household_power_consumption.txt", sep=";", dec=".", stringsAsFactors=FALSE)
     inputData$Global_active_power <- as.numeric(as.character(inputData$Global_active_power))
     inputData$Date <- as.Date(as.character(inputData$Date), format="%d/%m/%Y")
